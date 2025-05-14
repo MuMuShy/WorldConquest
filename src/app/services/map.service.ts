@@ -260,7 +260,7 @@ export class MapService {
     );
     
     if (countryFeature) {
-      this.updateStatusMarker(countryId, status, countryFeature);
+      //this.updateStatusMarker(countryId, status, countryFeature);
     }
   }
 
