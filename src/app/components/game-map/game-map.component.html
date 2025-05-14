@@ -1,3 +1,22 @@
+<div class="game-map-container">
+  <div class="map-loading-overlay" *ngIf="!isMapLoaded">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading map...</div>
+  </div>
+  <div id="map-container" [class.map-loaded]="isMapLoaded"></div>
+  <div class="ui-elements" *ngIf="isMapLoaded">
+    <app-country-panel
+      *ngIf="selectedCountry"
+      class="country-panel-container"
+      [country]="selectedCountry"
+      (close)="closeCountryPanel()"
+      (occupy)="onOccupyCountry()"
+      (tax)="onTaxCountry()"
+      (propaganda)="onPropaganda()">
+    </app-country-panel>
+  </div>
+</div>
+
 <div class="game-container">
   <div id="map-container" [ngClass]="{'map-loaded': isMapLoaded}"></div>
   
@@ -7,22 +26,6 @@
     
     <!-- Player info panel -->
     <app-player-info class="player-info-container"></app-player-info>
-    
-    <!-- Zoom controls -->
-    <app-zoom-controls 
-      class="zoom-controls-container"
-      (zoomInEvent)="zoomIn()"
-      (zoomOutEvent)="zoomOut()">
-    </app-zoom-controls>
-    
-    <!-- Tile popup -->
-    <app-tile-popup 
-      *ngIf="showTilePopup"
-      [style.left.px]="popupPosition.x"
-      [style.top.px]="popupPosition.y"
-      [tile]="selectedTile"
-      (occupyEvent)="onOccupyTile()"
-      (closeEvent)="closeTilePopup()">
-    </app-tile-popup>
+  
   </div>
 </div>

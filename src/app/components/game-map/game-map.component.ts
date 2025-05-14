@@ -11,74 +11,8 @@ import { Country } from '../../models/country.model';
   selector: 'app-game-map',
   standalone: true,
   imports: [CommonModule, WorldTimeComponent, PlayerInfoComponent, CountryPanelComponent],
-  template: `
-    <div class="game-map-container">
-      <!-- Map Container -->
-      <div id="map-container" [class.map-loaded]="isMapLoaded"></div>
-      
-      <!-- UI Elements -->
-      <div class="ui-elements" *ngIf="isMapLoaded">
-        <!-- Country Panel -->
-        <app-country-panel
-          *ngIf="selectedCountry"
-          class="country-panel-container"
-          [country]="selectedCountry"
-          (close)="closeCountryPanel()"
-          (occupy)="onOccupyCountry()"
-          (tax)="onTaxCountry()"
-          (propaganda)="onPropaganda()">
-        </app-country-panel>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .game-map-container {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    #map-container {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    #map-container.map-loaded {
-      opacity: 1;
-    }
-
-    .ui-elements {
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      pointer-events: none;
-
-      /* Enable pointer events only on UI components */
-      ::ng-deep > * {
-        pointer-events: auto;
-      }
-    }
-
-    .country-panel-container {
-      position: absolute;
-      top: 50%;
-      right: 1rem;
-      transform: translateY(-50%);
-    }
-
-    @media (max-width: 768px) {
-      .country-panel-container {
-        top: auto;
-        bottom: 1rem;
-        right: 0;
-        left: 0;
-        transform: none;
-      }
-    }
-  `]
+  templateUrl: './game-map.component.html',
+  styleUrls: ['./game-map.component.css']
 })
 export class GameMapComponent implements OnInit, AfterViewInit, OnDestroy {
   isMapLoaded = false;
@@ -128,14 +62,12 @@ export class GameMapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameState.occupyCountry(this.selectedCountry.id);
       this.mapService.updateCountryOwnership(this.selectedCountry.id, 'You');
       this.mapService.updateCountryStatus(this.selectedCountry.id, 'UnderAttack');
-      
       this.selectedCountry = {
         ...this.selectedCountry,
         owner: 'You',
         loyalty: 50,
         status: 'UnderAttack'
       };
-
       setTimeout(() => {
         if (this.selectedCountry) {
           this.mapService.updateCountryStatus(this.selectedCountry.id, 'Recovering');
@@ -152,13 +84,11 @@ export class GameMapComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.selectedCountry) {
       this.gameState.taxCountry(this.selectedCountry.id);
       this.mapService.updateCountryStatus(this.selectedCountry.id, 'Rebelling');
-      
       this.selectedCountry = {
         ...this.selectedCountry,
         loyalty: Math.max(0, this.selectedCountry.loyalty - 10),
         status: 'Rebelling'
       };
-
       setTimeout(() => {
         if (this.selectedCountry) {
           this.mapService.updateCountryStatus(this.selectedCountry.id, 'Idle');
@@ -175,13 +105,11 @@ export class GameMapComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.selectedCountry) {
       this.gameState.runPropaganda(this.selectedCountry.id);
       this.mapService.updateCountryStatus(this.selectedCountry.id, 'Propaganda');
-      
       this.selectedCountry = {
         ...this.selectedCountry,
         loyalty: Math.min(100, this.selectedCountry.loyalty + 10),
         status: 'Propaganda'
       };
-
       setTimeout(() => {
         if (this.selectedCountry) {
           this.mapService.updateCountryStatus(this.selectedCountry.id, 'Idle');
