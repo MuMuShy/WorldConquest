@@ -34,14 +34,33 @@
 
 @media (max-width: 768px) {
   .world-time-panel {
-    padding: 8px 16px;
-    min-width: 120px;
+    min-width: 0;
+    width: 100vw;
+    border-radius: 0;
+    padding: 12px 8px;
+    margin: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+    z-index: 100;
+    box-sizing: border-box;
   }
-  
   .time-label {
-    font-size: 12px;
+    font-size: 15px;
   }
-  
+  .day-counter {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .world-time-panel {
+    padding: 10px 2px;
+  }
+  .time-label {
+    font-size: 13px;
+  }
   .day-counter {
     font-size: 18px;
   }

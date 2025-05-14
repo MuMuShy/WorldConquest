@@ -37,12 +37,29 @@
 
 @media (max-width: 768px) {
   .zoom-controls {
-    padding: 8px;
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 10px 16px;
+    box-sizing: border-box;
   }
-  
   .zoom-button {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .zoom-controls {
+    padding: 8px 8px;
+    bottom: 8px;
+  }
+  .zoom-button {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
   }
 }

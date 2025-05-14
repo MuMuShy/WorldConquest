@@ -221,6 +221,11 @@ export class PlayerInfoComponent implements OnInit, OnDestroy {
     ownedTerritories: 0
   };
 
+  isCollapsed = false;
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
   private subscription: Subscription | null = null;
 
   constructor(private gameState: GameStateService) {}

@@ -30,7 +30,7 @@ export class MapService {
         container: containerId,
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [0, 20],
-        zoom: 2,
+        zoom: 3,
         minZoom: 1.2,
         maxZoom: 4.5,
         attributionControl: false,

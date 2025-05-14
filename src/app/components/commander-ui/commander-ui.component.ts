@@ -369,11 +369,85 @@ interface Commander {
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .commander-panel {
-        width: 100%;
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        font-size: 1.2rem !important;
+        border-radius: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        padding: 1.2rem 0.5rem 2.5rem 0.5rem !important;
+        transform: none !important;
       }
-
+      .profile-section, .resources-grid, .buffs-section, .alerts-section {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .commander-avatar {
+        width: 60px;
+        height: 60px;
+      }
+      .rank-insignia {
+        font-size: 1.5rem;
+      }
+      .commander-info .name {
+        font-size: 1.2rem;
+      }
       .resources-grid {
         grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      .resource-card {
+        padding: 0.9rem;
+        font-size: 1.2rem;
+      }
+      .resource-icon {
+        font-size: 1.5rem;
+      }
+      .buff-card, .alert-item {
+        padding: 0.7rem;
+        font-size: 1.1rem;
+      }
+      .section-title {
+        font-size: 1.1rem;
+      }
+      .xp-text {
+        font-size: 0.9rem;
+        top: -16px;
+      }
+    }
+    @media (max-width: 480px) {
+      .commander-panel {
+        padding: 0.5rem 0.2rem 2rem 0.2rem !important;
+      }
+      .commander-avatar {
+        width: 44px;
+        height: 44px;
+      }
+      .rank-insignia {
+        font-size: 1.1rem;
+      }
+      .commander-info .name {
+        font-size: 1rem;
+      }
+      .resource-card {
+        padding: 0.6rem;
+        font-size: 1rem;
+      }
+      .buff-card, .alert-item {
+        padding: 0.4rem;
+        font-size: 1rem;
+      }
+      .section-title {
+        font-size: 1rem;
+      }
+      .xp-text {
+        font-size: 0.7rem;
+        top: -12px;
       }
     }
   `]

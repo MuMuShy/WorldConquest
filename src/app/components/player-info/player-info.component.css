@@ -1,18 +1,36 @@
 .player-info-panel {
-  background-color: rgba(20, 30, 48, 0.85);
+  background: linear-gradient(180deg, rgba(20, 30, 48, 0.95) 0%, rgba(16, 24, 38, 0.95) 100%);
   color: #e0e7ff;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 140, 255, 0.3);
   border: 1px solid rgba(64, 106, 255, 0.5);
   overflow: hidden;
-  width: 260px;
+  max-width: 600px;
+  width: 95vw;
+  min-width: 220px;
+  margin: 12px auto 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
   animation: slideFadeIn 0.5s ease-out;
 }
 
+.player-info-panel.collapsed {
+  max-width: 220px;
+  min-width: 80px;
+  width: auto;
+  box-shadow: none;
+}
+
 .panel-header {
-  background-color: rgba(26, 39, 63, 0.9);
-  padding: 12px 15px;
-  border-bottom: 1px solid rgba(64, 106, 255, 0.5);
+  background: linear-gradient(90deg, rgba(26, 39, 63, 0.9) 0%, rgba(20, 30, 48, 0.9) 100%);
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+  border-right: 1px solid rgba(64, 106, 255, 0.2);
+  display: flex;
+  align-items: center;
+  min-width: 120px;
 }
 
 .panel-header h2 {
@@ -24,7 +42,12 @@
 }
 
 .panel-content {
-  padding: 15px;
+  flex: 1 1 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .info-row {
@@ -47,6 +70,34 @@
   color: #ffffff;
 }
 
+.collapse-icon {
+  margin-left: 8px;
+  font-size: 1.2em;
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1.2rem;
+}
+
+.stat-card {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  min-width: 0;
+  box-shadow: none;
+}
+
+.action-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
 @keyframes slideFadeIn {
   0% {
     opacity: 0;
@@ -60,10 +111,53 @@
 
 @media (max-width: 768px) {
   .player-info-panel {
+    flex-direction: column;
+    max-width: 98vw;
+    width: 98vw;
+    min-width: 0;
+    margin: 6px auto 0 auto;
+  }
+  .panel-header {
+    border-right: none;
+    border-bottom: 1px solid rgba(64, 106, 255, 0.2);
+    padding: 0.7rem 1rem;
+    min-width: 0;
+  }
+  .panel-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.7rem 1rem;
+  }
+  .stats-container {
+    flex-direction: column;
+    gap: 0.5rem;
     width: 100%;
   }
-  
-  .panel-content {
-    padding: 10px;
+  .action-bar {
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-info-panel {
+    padding: 0;
+  }
+  .panel-header {
+    padding: 6px 6px;
+  }
+  .panel-content, .stats-container, .action-bar {
+    padding: 6px;
+  }
+  .stat-card {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  .action-button {
+    padding: 0.7rem;
+    font-size: 1rem;
   }
 }
