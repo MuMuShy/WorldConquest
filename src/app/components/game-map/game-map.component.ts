@@ -222,7 +222,7 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         const fromCenter = getCenter(fromFeature);
         const toCenter = getCenter(toFeature);
-        this.animateMissileLine(map, [fromCenter.lng, fromCenter.lat], [toCenter.lng, toCenter.lat]);
+        this.animateMissileLine(map, [fromCenter.lng, fromCenter.lat], [toCenter.lng, toCenter.lat], event.toCountryId);
       }
     }));
 
@@ -261,7 +261,7 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // 新增：動畫函式
-  private animateMissileLine(map: any, from: [number, number], to: [number, number]) {
+  private animateMissileLine(map: any, from: [number, number], to: [number, number], toCountryId?: string) {
     console.log('missile from', from, 'to', to);
     const missileSource = map.getSource('missile-trace');
     if (!missileSource) {
@@ -321,6 +321,13 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
         // 新增：在目標產生爆炸特效
         this.fireAnims.push({ lng: to[0], lat: to[1], start: Date.now(), progress: 0 });
         this.renderFireEffect(map);
+        // 新增：飛彈射到才設 UnderAttack 狀態
+        if (typeof toCountryId === 'string') {
+          this.mapService.updateCountryStatus(toCountryId, 'UnderAttack');
+          setTimeout(() => {
+            this.mapService.updateCountryStatus(toCountryId, 'Idle');
+          }, 3000);
+        }
       }
     }, interval);
   }

@@ -14,10 +14,16 @@ interface EventToast {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="event-marquee chat-style">
-      <div *ngFor="let toast of toasts" class="event-toast">
-        <span class="icon">{{ toast.icon }}</span>
-        <span class="text">{{ toast.text }}</span>
+    <div class="event-marquee chat-style" [class.collapsed]="collapsed">
+      <button class="collapse-btn" (click)="toggleCollapse()" [attr.aria-label]="collapsed ? '展開事件訊息' : '收合事件訊息'">
+        <span *ngIf="collapsed">▲</span>
+        <span *ngIf="!collapsed">▼</span>
+      </button>
+      <div class="event-list" *ngIf="!collapsed">
+        <div *ngFor="let toast of toasts" class="event-toast">
+          <span class="icon">{{ toast.icon }}</span>
+          <span class="text">{{ toast.text }}</span>
+        </div>
       </div>
     </div>
   `,
@@ -45,7 +51,44 @@ interface EventToast {
       -webkit-backdrop-filter: blur(16px) saturate(1.2);
       scrollbar-width: thin;
       scrollbar-color: #4a9eff33 #222a44;
-      transition: background 0.3s, box-shadow 0.3s;
+      transition: background 0.3s, box-shadow 0.3s, max-height 0.3s;
+    }
+    .event-marquee.chat-style.collapsed {
+      max-height: 44px;
+      min-height: 0;
+      padding: 4px 10px 4px 10px;
+      overflow: visible;
+      background: rgba(30,38,58,0.18);
+    }
+    .collapse-btn {
+      pointer-events: auto;
+      background: rgba(40,60,90,0.18);
+      border: none;
+      color: #8ba3ff;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      margin-bottom: 2px;
+      margin-right: 0;
+      margin-left: auto;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 32px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px #0002;
+    }
+    .collapse-btn:hover {
+      background: rgba(74,158,255,0.12);
+      color: #4a9eff;
+    }
+    .event-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+      pointer-events: auto;
     }
     .event-toast {
       background: rgba(60,80,120,0.22);
@@ -98,10 +141,15 @@ interface EventToast {
 })
 export class EventMarqueeComponent implements OnInit, OnDestroy {
   toasts: EventToast[] = [];
+  collapsed = false;
   private sub: Subscription | undefined = undefined;
   private id = 0;
 
   constructor(private worldEvent: WorldEventService) {}
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+  }
 
   ngOnInit() {
     this.sub = this.worldEvent.events$.subscribe((event: any) => {
