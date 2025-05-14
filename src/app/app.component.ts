@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { GameMapComponent } from './components/game-map/game-map.component';
 import { CountryPanelComponent } from './components/country-panel/country-panel.component';
 import { TilePopupComponent } from './components/tile-popup/tile-popup.component';
+import { EventMarqueeComponent } from './components/event-marquee.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, GameMapComponent, CountryPanelComponent, TilePopupComponent],
+  imports: [CommonModule, GameMapComponent, CountryPanelComponent, TilePopupComponent, EventMarqueeComponent],
   template: `
+    <app-event-marquee></app-event-marquee>
     <div class="main-layout">
       <header class="main-header">
         <div class="info-item"><span class="icon">💰</span>{{ player.gold | number }}</div>
@@ -29,8 +31,8 @@ import { TilePopupComponent } from './components/tile-popup/tile-popup.component
       </div>
     </div>
   `,
-  styles: [`
-    .main-layout {
+  styles: [
+    `.main-layout {
       position: relative;
       width: 100vw;
       height: 100vh;

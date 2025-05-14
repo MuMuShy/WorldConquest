@@ -182,14 +182,15 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
       paint: {
         'line-color': [
           'interpolate', ['linear'], ['line-progress'],
-          0, '#00fff7',
-          0.5, '#4a9eff',
-          1, '#00ffea'
+          0, '#00eaff',      // 亮藍
+          0.4, '#4a9eff',    // 藍紫
+          0.7, '#a259ff',    // 紫
+          1, '#00ffd0'       // 青綠
         ],
-        'line-width': 1.2,
-        'line-opacity': 0.95,
-        'line-blur': 2,
-        'line-dasharray': [1, 2]
+        'line-width': window.innerWidth < 600 ? 4.2 : 2.2, // 手機更粗
+        'line-opacity': 0.98,
+        'line-blur': 0.2,
+        'line-dasharray': [1, 1.2]
       }
     }, 'countries-fill');
     console.log('missile-trace source/layer added');
