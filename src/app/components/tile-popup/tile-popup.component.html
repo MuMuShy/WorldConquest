@@ -1,0 +1,24 @@
+<div class="popup-container" [ngStyle]="_style">
+  <div class="popup-content">
+    <div class="popup-header">
+      <h3>Territory {{ tile?.properties?.id }}</h3>
+      <button class="close-button" (click)="onClose()" aria-label="Close">×</button>
+    </div>
+    <div class="popup-body">
+      <p>Status: <span [ngClass]="tile?.properties?.owner ? 'status-occupied' : 'status-free'">
+        {{ tile?.properties?.owner ? 'Occupied' : 'Unclaimed' }}
+      </span></p>
+      
+      <button 
+        class="occupy-button" 
+        (click)="onOccupy()"
+        *ngIf="!tile?.properties?.owner">
+        Occupy this land
+      </button>
+      
+      <p *ngIf="tile?.properties?.owner">
+        This territory is already under control.
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="player-info-panel">
+  <div class="panel-header">
+    <h2>Commander Profile</h2>
+  </div>
+  <div class="panel-content">
+    <div class="info-row">
+      <span class="info-label">Name:</span>
+      <span class="info-value">{{ player.name }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Gold:</span>
+      <span class="info-value">{{ player.gold | number }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Countries:</span>
+      <span class="info-value">{{ player.ownedCountries }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Population:</span>
+      <span class="info-value">{{ player.totalPopulation | number }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Income/day:</span>
+      <span class="info-value">{{ player.income }}</span>
+    </div>
+  </div>
+</div>

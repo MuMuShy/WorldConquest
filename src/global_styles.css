@@ -1,0 +1,200 @@
+/* Global styles for World Conquest */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Exo 2', sans-serif;
+  background-color: #0c1220;
+  color: #e0e7ff;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+button {
+  font-family: 'Exo 2', sans-serif;
+  cursor: pointer;
+}
+
+/* Game UI Elements */
+.game-title {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #4a9eff;
+  text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(20, 30, 48, 0.95) 0%, rgba(16, 24, 38, 0.95) 100%);
+  border: 1px solid rgba(64, 106, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+              0 0 15px rgba(64, 106, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.panel-header {
+  background: linear-gradient(90deg, rgba(26, 39, 63, 0.9) 0%, rgba(20, 30, 48, 0.9) 100%);
+  border-bottom: 1px solid rgba(64, 106, 255, 0.3);
+  padding: 1rem 1.5rem;
+  border-radius: 12px 12px 0 0;
+}
+
+.panel-content {
+  padding: 1.5rem;
+}
+
+/* Buttons */
+.command-button {
+  background: linear-gradient(135deg, rgba(64, 106, 255, 0.9) 0%, rgba(51, 85, 204, 0.9) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(64, 106, 255, 0.7);
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.command-button:hover {
+  background: linear-gradient(135deg, rgba(74, 116, 255, 0.9) 0%, rgba(61, 95, 214, 0.9) 100%);
+  box-shadow: 0 0 15px rgba(64, 106, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.command-button:active {
+  transform: translateY(1px);
+}
+
+.command-button.danger {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.9) 0%, rgba(229, 57, 53, 0.9) 100%);
+  border-color: rgba(244, 67, 54, 0.7);
+}
+
+.command-button.success {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.9) 0%, rgba(67, 160, 71, 0.9) 100%);
+  border-color: rgba(76, 175, 80, 0.7);
+}
+
+/* Stats and Values */
+.stat-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  color: #4a9eff;
+  text-shadow: 0 0 5px rgba(74, 158, 255, 0.3);
+}
+
+.stat-label {
+  color: #8ba3ff;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Animations */
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 5px rgba(64, 106, 255, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(64, 106, 255, 0.4); }
+  100% { box-shadow: 0 0 5px rgba(64, 106, 255, 0.2); }
+}
+
+@keyframes numberChange {
+  0% { transform: translateY(-100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Country Status Markers */
+.country-status-marker {
+  pointer-events: none;
+}
+
+.status-label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  animation: statusPulse 2s infinite;
+}
+
+.status-underattack {
+  background: rgba(244, 67, 54, 0.9);
+}
+
+.status-rebelling {
+  background: rgba(255, 193, 7, 0.9);
+}
+
+.status-propaganda {
+  background: rgba(33, 150, 243, 0.9);
+}
+
+.status-recovering {
+  background: rgba(76, 175, 80, 0.9);
+}
+
+@keyframes statusPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(20, 30, 48, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(64, 106, 255, 0.7);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(64, 106, 255, 0.9);
+}
+
+/* Map control overrides */
+.mapboxgl-ctrl-bottom-right,
+.mapboxgl-ctrl-bottom-left {
+  display: none;
+}
+
+.mapboxgl-ctrl-attrib {
+  display: none;
+}
+
+.mapboxgl-ctrl-compass {
+  display: none;
+}
+
+/* Utility classes */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

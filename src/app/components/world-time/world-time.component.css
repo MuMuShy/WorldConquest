@@ -1,0 +1,48 @@
+.world-time-panel {
+  background-color: rgba(20, 30, 48, 0.85);
+  color: #e0e7ff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 140, 255, 0.3);
+  border: 1px solid rgba(64, 106, 255, 0.5);
+  min-width: 150px;
+  animation: pulseShadow 3s infinite alternate;
+}
+
+.time-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  color: #8ba3ff;
+}
+
+.day-counter {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@keyframes pulseShadow {
+  0% {
+    box-shadow: 0 0 15px rgba(0, 140, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 140, 255, 0.5);
+  }
+}
+
+@media (max-width: 768px) {
+  .world-time-panel {
+    padding: 8px 16px;
+    min-width: 120px;
+  }
+  
+  .time-label {
+    font-size: 12px;
+  }
+  
+  .day-counter {
+    font-size: 18px;
+  }
+}

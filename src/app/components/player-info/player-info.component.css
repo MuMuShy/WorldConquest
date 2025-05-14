@@ -1,0 +1,69 @@
+.player-info-panel {
+  background-color: rgba(20, 30, 48, 0.85);
+  color: #e0e7ff;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 140, 255, 0.3);
+  border: 1px solid rgba(64, 106, 255, 0.5);
+  overflow: hidden;
+  width: 260px;
+  animation: slideFadeIn 0.5s ease-out;
+}
+
+.panel-header {
+  background-color: rgba(26, 39, 63, 0.9);
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(64, 106, 255, 0.5);
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #b7d0ff;
+  letter-spacing: 1px;
+}
+
+.panel-content {
+  padding: 15px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  color: #8ba3ff;
+  font-weight: 500;
+}
+
+.info-value {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+@keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .player-info-panel {
+    width: 100%;
+  }
+  
+  .panel-content {
+    padding: 10px;
+  }
+}
