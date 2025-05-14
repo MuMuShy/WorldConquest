@@ -6,11 +6,27 @@ import * as GeoJSON from 'geojson';
 import { environment } from '../../environments/environment';
 import { Country, CountryStatus } from '../models/country.model';
 
+// === 新增：計算 GeoJSON 國家中心點 ===
+function getFeatureCenter(feature: any): { lng: number, lat: number } {
+  const bounds = new mapboxgl.LngLatBounds();
+  let coords: number[][] = [];
+  if (feature.geometry.type === 'Polygon') {
+    coords = feature.geometry.coordinates[0];
+  } else if (feature.geometry.type === 'MultiPolygon') {
+    coords = feature.geometry.coordinates[0][0];
+  }
+  coords.forEach((coord: number[]) => {
+    bounds.extend(coord as [number, number]);
+  });
+  const center = bounds.getCenter();
+  return { lng: center.lng, lat: center.lat };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  private map: mapboxgl.Map | null = null;
+  public map: mapboxgl.Map | null = null;
   private countriesData: GeoJSON.FeatureCollection | null = null;
   private statusMarkers: { [key: string]: mapboxgl.Marker } = {};
   private animationInterval: number | null = null;

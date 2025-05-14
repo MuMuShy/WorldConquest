@@ -9,6 +9,7 @@ export interface Country {
   income: number;
   status: CountryStatus;
   geometry?: any;
+  center?: { lng: number; lat: number };
 }
 
 export interface CountryState {

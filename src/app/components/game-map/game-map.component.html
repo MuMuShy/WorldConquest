@@ -3,7 +3,9 @@
     <div class="spinner"></div>
     <div class="loading-text">Loading map...</div>
   </div>
-  <div id="map-container" [class.map-loaded]="isMapLoaded"></div>
+  <div id="map-container" [class.map-loaded]="isMapLoaded">
+    <canvas id="anim-canvas"></canvas>
+  </div>
   <div class="ui-elements" *ngIf="isMapLoaded">
     <app-country-panel
       *ngIf="selectedCountry"
@@ -16,16 +18,7 @@
     </app-country-panel>
   </div>
 </div>
-
-<div class="game-container">
-  <div id="map-container" [ngClass]="{'map-loaded': isMapLoaded}"></div>
-  
-  <div class="overlay-container">
-    <!-- World time display -->
-    <app-world-time class="world-time-container"></app-world-time>
-    
-    <!-- Player info panel -->
-    <app-player-info class="player-info-container"></app-player-info>
-  
-  </div>
-</div>
+<!-- <div class="overlay-container">
+  <app-world-time class="world-time-container"></app-world-time>
+  <app-player-info class="player-info-container"></app-player-info>
+</div> -->
