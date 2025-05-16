@@ -2,7 +2,6 @@ import mapboxgl from 'mapbox-gl';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorldTimeComponent } from '../world-time/world-time.component';
-import { PlayerInfoComponent } from '../player-info/player-info.component';
 import { CountryPanelComponent } from '../country-panel/country-panel.component';
 import { ZoomControlsComponent } from '../zoom-controls/zoom-controls.component';
 import { TilePopupComponent } from '../tile-popup/tile-popup.component';
@@ -11,12 +10,15 @@ import { MapService } from '../../services/map.service';
 import { GameStateService } from '../../services/game-state.service';
 import { Country } from '../../models/country.model';
 import { Subscription } from 'rxjs';
-import * as THREE from 'three';
+import { MapEffectService } from '../../services/map-effect.service';
+import type { CountryStatus } from '../../models/country.model';
+import { getFeatureCenter } from '../../utils/geo-utils';
+import { Player } from '../../models/player.model';
 
 @Component({
   selector: 'app-game-map',
   standalone: true,
-  imports: [CommonModule, WorldTimeComponent, PlayerInfoComponent, CountryPanelComponent, ZoomControlsComponent, TilePopupComponent],
+  imports: [CommonModule, WorldTimeComponent, CountryPanelComponent, ZoomControlsComponent, TilePopupComponent],
   templateUrl: './game-map.component.html',
   styleUrls: ['./game-map.component.css']
 })
@@ -28,41 +30,23 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
   showTilePopup = false;
   popupPosition = { x: 0, y: 0 };
   private sub = new Subscription();
-
-  // 新增：飛彈動畫佇列
-  missileQueue: Array<{
-    from: string;
-    to: string;
-    startTime: number;
-    duration: number;
-  }> = [];
-  missileAnimation: {
-    from: string;
-    to: string;
-    startTime: number;
-    duration: number;
-  } | null = null;
-
-  private _isDrawing = false;
-  private threeLayer: any = null;
-
-  private missileLayerReady = false;
-
-  // 火焰特效陣列
-  fireAnims: Array<{lng: number, lat: number, start: number, progress: number}> = [];
+  player: Player | null = null;
+  isAttacking = false;
 
   constructor(
     private worldEvent: WorldEventService,
     private mapService: MapService,
-    private gameState: GameStateService
+    private gameState: GameStateService,
+    private mapEffect: MapEffectService
   ) {}
 
   ngOnInit() {
     this.sub.add(this.worldEvent.countries$.subscribe(countries => {
       this.countries = countries;
     }));
-
-    // 初始化地圖互動
+    this.sub.add(this.gameState.player$.subscribe(player => {
+      this.player = player;
+    }));
     this.gameState.initGame();
   }
 
@@ -81,7 +65,6 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isMapLoaded = true;
       this.mapService.addCountriesToMap();
       this.setupMapEvents();
-
       const map = this.mapService.map;
       this.onMapStyleLoaded(map);
     });
@@ -166,6 +149,54 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  onAttackCountry(): void {
+    if (!this.selectedCountry || !this.player) return;
+    this.isAttacking = true;
+    this.worldEvent.pushEvent({ type: 'playerDirectAttack', toCountryId: this.selectedCountry.id });
+    setTimeout(() => {
+      // 攻擊邏輯：玩家每次攻擊消耗 100 infantry、10 tank、2 warship、2 fighter
+      // 傷害：
+      // 坦克>士兵、軍艦>坦克、戰機>軍艦、士兵>戰機
+      // 其餘 1:1
+      const atk = {
+        infantry: Math.min(this.player!.army.infantry, 100),
+        tank: Math.min(this.player!.army.tank, 10),
+        warship: Math.min(this.player!.army.warship, 2),
+        fighter: Math.min(this.player!.army.fighter, 2)
+      };
+      if (atk.infantry + atk.tank + atk.warship + atk.fighter === 0) {
+        this.isAttacking = false;
+        return;
+      }
+      let target = { ...this.selectedCountry!.army };
+      target.infantry = Math.max(0, target.infantry - (atk.tank * 20));
+      target.tank = Math.max(0, target.tank - (atk.warship * 4));
+      target.warship = Math.max(0, target.warship - (atk.fighter * 4));
+      target.fighter = Math.max(0, target.fighter - Math.floor(atk.infantry * 1.5));
+      target.infantry = Math.max(0, target.infantry - atk.infantry);
+      target.tank = Math.max(0, target.tank - atk.tank);
+      target.warship = Math.max(0, target.warship - atk.warship);
+      target.fighter = Math.max(0, target.fighter - atk.fighter);
+      this.player!.army.infantry -= atk.infantry;
+      this.player!.army.tank -= atk.tank;
+      this.player!.army.warship -= atk.warship;
+      this.player!.army.fighter -= atk.fighter;
+      this.selectedCountry = {
+        ...this.selectedCountry!,
+        army: target
+      };
+      this.isAttacking = false;
+      // 修正：同步 UI 狀態
+      if (this.selectedCountry) {
+        this.selectedCountry = {
+          ...this.selectedCountry,
+          status: 'Idle'
+        };
+      }
+      // TODO: 更新到全域狀態（GameStateService、WorldEventService...）
+    }, 2000);
+  }
+
   private onMapStyleLoaded(map: any) {
     console.log('map loaded');
     map.addSource('missile-trace', {
@@ -182,48 +213,21 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
       paint: {
         'line-color': [
           'interpolate', ['linear'], ['line-progress'],
-          0, '#00eaff',      // 亮藍
-          0.4, '#4a9eff',    // 藍紫
-          0.7, '#a259ff',    // 紫
-          1, '#00ffd0'       // 青綠
+          0, '#00eaff',
+          0.4, '#4a9eff',
+          0.7, '#a259ff',
+          1, '#00ffd0'
         ],
-        'line-width': window.innerWidth < 600 ? 4.2 : 2.2, // 手機更粗
+        'line-width': window.innerWidth < 600 ? 4.2 : 2.2,
         'line-opacity': 0.98,
         'line-blur': 0.2,
         'line-dasharray': [1, 1.2]
       }
     }, 'countries-fill');
-    console.log('missile-trace source/layer added');
-    console.log('all layers:', map.getStyle().layers.map((l: any) => l.id));
-    this.missileLayerReady = true;
 
-    // 監聽 attack 事件，觸發動畫
+    this.mapEffect.setMap(map);
     this.sub.add(this.worldEvent.events$.subscribe(event => {
-      console.log('event', event);
-      if (event.type === 'attack' && event.fromCountryId && event.toCountryId && this.missileLayerReady) {
-        console.log('attack event', event);
-        // 查詢國家中心
-        const features = map.querySourceFeatures('countries');
-        const fromFeature = features.find((f: any) => f.properties && f.properties['name'] === event.fromCountryId);
-        const toFeature = features.find((f: any) => f.properties && f.properties['name'] === event.toCountryId);
-        console.log('fromFeature', fromFeature);
-        console.log('toFeature', toFeature);
-        if (!fromFeature || !toFeature) return;
-        function getCenter(feature: any) {
-          const bounds = new mapboxgl.LngLatBounds();
-          let coords: number[][] = [];
-          if (feature.geometry.type === 'Polygon') {
-            coords = feature.geometry.coordinates[0];
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            coords = feature.geometry.coordinates[0][0];
-          }
-          coords.forEach((coord: number[]) => bounds.extend(coord as [number, number]));
-          return bounds.getCenter();
-        }
-        const fromCenter = getCenter(fromFeature);
-        const toCenter = getCenter(toFeature);
-        this.animateMissileLine(map, [fromCenter.lng, fromCenter.lat], [toCenter.lng, toCenter.lat], event.toCountryId);
-      }
+      this.mapEffect.handleEvent(event, (id: string, status: CountryStatus) => this.mapService.updateCountryStatus(id, status));
     }));
 
     map.addSource('explosion-effect', {
@@ -259,103 +263,4 @@ export class GameMapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, 'missile-trace');
   }
-
-  // 新增：動畫函式
-  private animateMissileLine(map: any, from: [number, number], to: [number, number], toCountryId?: string) {
-    console.log('missile from', from, 'to', to);
-    const missileSource = map.getSource('missile-trace');
-    if (!missileSource) {
-      console.warn('missile-trace source 尚未初始化');
-      return;
-    }
-    // 根據距離自動調整 steps 與 interval
-    const fromLngLat = new mapboxgl.LngLat(from[0], from[1]);
-    const toLngLat = new mapboxgl.LngLat(to[0], to[1]);
-    const distance = fromLngLat.distanceTo(toLngLat); // 公尺
-    const minSteps = 30;
-    const maxSteps = 120;
-    const minInterval = 12;
-    const maxInterval = 24;
-    const steps = Math.round(minSteps + (maxSteps - minSteps) * Math.min(distance / 5000, 1));
-    const interval = Math.max(minInterval, Math.min(maxInterval, (800 + (distance / 1000) * 500) / steps));
-    const duration = steps * interval;
-    // 拋物線法線方向
-    const dx = to[0] - from[0];
-    const dy = to[1] - from[1];
-    const len = Math.sqrt(dx * dx + dy * dy);
-    const nx = -dy / len;
-    const ny = dx / len;
-    const maxHeight = len * 0.3; // 拋物線最大偏移
-    const coords: [number, number][] = [];
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      const lng = from[0] + dx * t + nx * maxHeight * 4 * t * (1 - t);
-      const lat = from[1] + dy * t + ny * maxHeight * 4 * t * (1 - t);
-      coords.push([lng, lat]);
-    }
-    let i = 0;
-    const missileFeature = {
-      type: 'Feature',
-      geometry: { type: 'LineString', coordinates: [coords[0]] },
-      properties: {}
-    };
-    const features = missileSource._data.features;
-    features.push(missileFeature);
-    const timer = setInterval(() => {
-      if (i < coords.length) {
-        missileFeature.geometry.coordinates.push(coords[i]);
-        missileSource.setData({
-          type: 'FeatureCollection',
-          features
-        });
-        i++;
-      } else {
-        clearInterval(timer);
-        setTimeout(() => {
-          features.splice(features.indexOf(missileFeature), 1);
-          missileSource.setData({
-            type: 'FeatureCollection',
-            features
-          });
-        }, 800);
-        // 新增：在目標產生爆炸特效
-        this.fireAnims.push({ lng: to[0], lat: to[1], start: Date.now(), progress: 0 });
-        this.renderFireEffect(map);
-        // 新增：飛彈射到才設 UnderAttack 狀態
-        if (typeof toCountryId === 'string') {
-          this.mapService.updateCountryStatus(toCountryId, 'UnderAttack');
-          setTimeout(() => {
-            this.mapService.updateCountryStatus(toCountryId, 'Idle');
-          }, 3000);
-        }
-      }
-    }, interval);
-  }
-
-  // 渲染火焰特效（簡單用 mapbox marker 或 emoji）
-  private renderFireEffect(map: any) {
-    const now = Date.now();
-    // 1秒動畫
-    this.fireAnims = this.fireAnims.filter(f => now - f.start < 1000);
-    this.fireAnims.forEach(f => {
-      f.progress = Math.min(1, (now - f.start) / 1000);
-    });
-    const features = this.fireAnims.map(f => ({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [f.lng, f.lat] },
-      properties: { progress: f.progress }
-    }));
-    const source = map.getSource('explosion-effect');
-    if (source) {
-      source.setData({
-        type: 'FeatureCollection',
-        features
-      });
-    }
-    if (this.fireAnims.length > 0) {
-      setTimeout(() => this.renderFireEffect(map), 40);
-    }
-  }
-
-  private _fireMarkers: any[] = [];
 }

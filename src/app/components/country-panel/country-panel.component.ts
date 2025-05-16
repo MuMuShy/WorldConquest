@@ -21,13 +21,40 @@ import { Country } from '../../models/country.model';
       <div class="panel-content">
         <div class="stats-grid">
           <div class="stat-card">
+            <div class="stat-icon">🪖</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ country.army.infantry | number }}</div>
+              <div class="stat-label">Infantry</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ country.army.tank | number }}</div>
+              <div class="stat-label">Tank</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🚢</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ country.army.warship | number }}</div>
+              <div class="stat-label">Warship</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✈️</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ country.army.fighter | number }}</div>
+              <div class="stat-label">Fighter</div>
+            </div>
+          </div>
+          <div class="stat-card">
             <div class="stat-icon">👥</div>
             <div class="stat-info">
               <div class="stat-value">{{ country.population | number }}</div>
               <div class="stat-label">Population</div>
             </div>
           </div>
-          
           <div class="stat-card">
             <div class="stat-icon">❤️</div>
             <div class="stat-info">
@@ -35,7 +62,6 @@ import { Country } from '../../models/country.model';
               <div class="stat-label">Loyalty</div>
             </div>
           </div>
-          
           <div class="stat-card">
             <div class="stat-icon">💰</div>
             <div class="stat-info">
@@ -43,7 +69,6 @@ import { Country } from '../../models/country.model';
               <div class="stat-label">Income</div>
             </div>
           </div>
-          
           <div class="stat-card">
             <div class="stat-icon">👑</div>
             <div class="stat-info">
@@ -54,14 +79,29 @@ import { Country } from '../../models/country.model';
             </div>
           </div>
         </div>
+        <div style="margin-top: 0.7rem; color: #8ba3ff; font-size: 0.95rem; text-align: center;">
+          軍種相剋：坦克&gt;士兵、軍艦&gt;坦克、戰機&gt;軍艦、士兵&gt;戰機
+        </div>
+        
+        <div *ngIf="isAttacking" class="attack-anim">
+          <span class="spinner"></span>
+          <span class="attack-text">攻擊中...</span>
+        </div>
         
         <div class="actions-grid">
           <button 
-            *ngIf="country.owner !== 'You'"
+            *ngIf="country.owner !== 'You' && (country.army.infantry + country.army.tank + country.army.warship + country.army.fighter) > 0"
+            class="action-button occupy"
+            (click)="onAttack()">
+            <span class="action-icon">⚔️</span>
+            <span class="action-text">Attack</span>
+          </button>
+          <button 
+            *ngIf="country.owner !== 'You' && (country.army.infantry + country.army.tank + country.army.warship + country.army.fighter) === 0"
             class="action-button occupy"
             (click)="onOccupy()">
-            <span class="action-icon">⚔️</span>
-            <span class="action-text">Occupy Territory</span>
+            <span class="action-icon">🏳️</span>
+            <span class="action-text">Occupy</span>
           </button>
           
           <ng-container *ngIf="country.owner === 'You'">
@@ -91,7 +131,6 @@ import { Country } from '../../models/country.model';
       background: linear-gradient(180deg, rgba(20, 30, 48, 0.95) 0%, rgba(16, 24, 38, 0.95) 100%);
       border: 1px solid rgba(64, 106, 255, 0.5);
       border-radius: 12px;
-      width: 360px;
       animation: slideFadeIn 0.3s ease-out;
       overflow: hidden;
     }
@@ -360,14 +399,42 @@ import { Country } from '../../models/country.model';
         font-size: 1rem;
       }
     }
+
+    .attack-anim {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 0.7rem;
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 4px solid #4a9eff;
+      border-top: 4px solid #e0e7ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    .attack-text {
+      color: #4a9eff;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
   `]
 })
 export class CountryPanelComponent {
   @Input() country: Country | null = null;
+  @Input() isAttacking: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() occupy = new EventEmitter<void>();
   @Output() tax = new EventEmitter<void>();
   @Output() propaganda = new EventEmitter<void>();
+  @Output() attack = new EventEmitter<void>();
 
   onClose(): void {
     this.close.emit();
@@ -383,5 +450,9 @@ export class CountryPanelComponent {
 
   onPropaganda(): void {
     this.propaganda.emit();
+  }
+
+  onAttack(): void {
+    this.attack.emit();
   }
 }

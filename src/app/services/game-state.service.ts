@@ -9,12 +9,42 @@ import { Country, CountryState } from '../models/country.model';
 export class GameStateService {
   private dayCounter = new BehaviorSubject<number>(1);
   private playerData = new BehaviorSubject<Player>({
-    name: 'Commander Alpha',
-    gold: 100000,
+    id: 1,
+    level: 10,
+    avatar: 'https://img.tapimg.net/market/images/baa6298b562087e18e936f47f4def1ab.png/appicon?t=1',
+    name: 'mumu',
     ownedCountries: 0,
     totalPopulation: 0,
     ownedTerritories: 0,
-    income: 0
+    income: 0,
+    influence: 0,
+    buffs: [],
+    alerts: [],
+    stats: {
+      attack: 100,
+      defense: 100,
+      speed: 100
+    },
+    resources: {
+      money: 1000000,
+      soldiers: 1000000,
+      crystals: 1000000,
+      power: 1000000
+    },
+    army: { infantry: 5000, tank: 200, warship: 30, fighter: 30 },
+    health: {
+      current: 100,
+      max: 100
+    },
+    energy: {
+      current: 100,
+      max: 100
+    },
+    experience: {
+      current: 0,
+      required: 1000000
+    },
+    faction: 'alliance'
   });
   private countries = new BehaviorSubject<CountryState>({});
   
@@ -70,7 +100,10 @@ export class GameStateService {
       
       this.playerData.next({
         ...player,
-        gold: player.gold + country.income
+        resources: {
+          ...player.resources,
+          money: player.resources.money + country.income
+        }
       });
     }
   }
@@ -81,7 +114,7 @@ export class GameStateService {
     const player = this.playerData.value;
     const propagandaCost = 100;
     
-    if (country && country.owner === 'You' && player.gold >= propagandaCost) {
+    if (country && country.owner === 'You' && player.resources.money >= propagandaCost) {
       country.loyalty = Math.min(100, country.loyalty + 10);
       
       this.countries.next({
@@ -91,7 +124,10 @@ export class GameStateService {
       
       this.playerData.next({
         ...player,
-        gold: player.gold - propagandaCost
+        resources: {
+          ...player.resources,
+          money: player.resources.money - propagandaCost
+        }
       });
     }
   }
@@ -123,7 +159,10 @@ export class GameStateService {
     
     this.playerData.next({
       ...player,
-      gold: player.gold + totalIncome
+      resources:{
+        ...player.resources,
+        money: player.resources.money + totalIncome
+      }
     });
   }
   
@@ -131,5 +170,13 @@ export class GameStateService {
     if (this.gameLoopInterval) {
       clearInterval(this.gameLoopInterval);
     }
+  }
+  
+  public setPlayerFaction(faction: 'alliance' | 'empire') {
+    const player = this.playerData.value;
+    this.playerData.next({
+      ...player,
+      faction
+    });
   }
 }

@@ -6,22 +6,6 @@ import * as GeoJSON from 'geojson';
 import { environment } from '../../environments/environment';
 import { Country, CountryStatus } from '../models/country.model';
 
-// === 新增：計算 GeoJSON 國家中心點 ===
-function getFeatureCenter(feature: any): { lng: number, lat: number } {
-  const bounds = new mapboxgl.LngLatBounds();
-  let coords: number[][] = [];
-  if (feature.geometry.type === 'Polygon') {
-    coords = feature.geometry.coordinates[0];
-  } else if (feature.geometry.type === 'MultiPolygon') {
-    coords = feature.geometry.coordinates[0][0];
-  }
-  coords.forEach((coord: number[]) => {
-    bounds.extend(coord as [number, number]);
-  });
-  const center = bounds.getCenter();
-  return { lng: center.lng, lat: center.lat };
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -87,7 +71,8 @@ export class MapService {
           loyalty: 50,
           income: Math.floor(Math.random() * 1000) + 100,
           status: 'Idle' as CountryStatus,
-          attackFrame: 0
+          attackFrame: 0,
+          army: { infantry: 3000, tank: 100, warship: 20, fighter: 20 }
         }
       }))
     };
@@ -202,7 +187,8 @@ export class MapService {
             population: countryData.properties?.['population'],
             loyalty: countryData.properties?.['loyalty'],
             income: countryData.properties?.['income'],
-            status: countryData.properties?.['status'] || 'Idle'
+            status: countryData.properties?.['status'] || 'Idle',
+            army: countryData.properties?.['army'] ?? { infantry: 3000, tank: 100, warship: 20, fighter: 20 }
           };
           
           const position = {
@@ -254,50 +240,6 @@ export class MapService {
     }
     
     this.countriesData = updatedData;
-    
-    const countryFeature = updatedData.features.find(
-      (feature: any) => feature.properties?.['name'] === countryId
-    );
-    
-    if (countryFeature) {
-      //this.updateStatusMarker(countryId, status, countryFeature);
-    }
-  }
-
-  private updateStatusMarker(countryId: string, status: CountryStatus, feature: any): void {
-    if (!this.map) return;
-
-    if (this.statusMarkers[countryId]) {
-      this.statusMarkers[countryId].remove();
-      delete this.statusMarkers[countryId];
-    }
-
-    if (status === 'Idle') return;
-
-    const bounds = new mapboxgl.LngLatBounds();
-    const coordinates = feature.geometry.coordinates.flat(2);
-    coordinates.forEach((coord: number[]) => {
-      bounds.extend(coord as [number, number]);
-    });
-    
-    const center = bounds.getCenter();
-
-    const el = document.createElement('div');
-    el.className = 'country-status-marker';
-    el.innerHTML = `
-      <div class="status-label status-${status.toLowerCase()}">
-        ${feature.properties['name']}: ${status}
-      </div>
-    `;
-
-    const marker = new mapboxgl.Marker({
-      element: el,
-      anchor: 'bottom'
-    })
-      .setLngLat(center)
-      .addTo(this.map);
-
-    this.statusMarkers[countryId] = marker;
   }
 
   public updateCountryOwnership(countryId: string, owner: string): void {
@@ -380,7 +322,8 @@ export class MapService {
         loyalty: 50,
         income: Math.floor(population / 1000000),
         status: 'Idle' as CountryStatus,
-        attackFrame: 0
+        attackFrame: 0,
+        army: { infantry: 3000, tank: 100, warship: 20, fighter: 20 }
       },
       geometry: {
         type: 'Polygon',

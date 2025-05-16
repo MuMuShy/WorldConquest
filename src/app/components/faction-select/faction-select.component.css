@@ -1,0 +1,103 @@
+.faction-select-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 32, 0.92);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px) saturate(1.1);
+}
+.faction-select-dialog {
+  background: linear-gradient(135deg, rgba(18, 24, 38, 0.98) 70%, rgba(30, 40, 60, 0.93) 100%);
+  border-radius: 14px;
+  padding: 2.5rem 2.2rem 2.2rem 2.2rem;
+  box-shadow: 0 8px 40px 0 #000c, 0 0 0 2px #222b44cc;
+  text-align: center;
+  min-width: 340px;
+  border: 2.5px solid #232b3a;
+  position: relative;
+  overflow: hidden;
+}
+.faction-select-dialog::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #1a273f33 0%, #232b3a22 100%);
+  z-index: 0;
+}
+.faction-select-dialog h2 {
+  color: #e0e7ef;
+  font-size: 2.1rem;
+  font-family: 'Orbitron', 'Montserrat', sans-serif;
+  letter-spacing: 2px;
+  margin-bottom: 2.2rem;
+  text-shadow: 0 2px 16px #222b4488, 0 0 2px #fff4;
+  position: relative;
+  z-index: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+.faction-btns {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
+.faction-btn {
+  font-size: 1.25rem;
+  padding: 1.2rem 2.5rem;
+  border-radius: 8px;
+  border: 2.5px solid #232b3a;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  transition: transform 0.13s, box-shadow 0.18s, background 0.2s, border 0.2s;
+  box-shadow: 0 2px 18px 0 #1118, 0 0 0 2px #232b3a;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  position: relative;
+  background: linear-gradient(120deg, #232b3a 60%, #1a273f 100%);
+  color: #e0e7ef;
+  outline: none;
+  text-shadow: 0 1px 2px #000a;
+  text-transform: uppercase;
+}
+.faction-btn.alliance {
+  border-color: #3a6aff;
+  box-shadow: 0 0 18px 0 #3a6aff33, 0 0 0 2px #3a6aff44;
+}
+.faction-btn.empire {
+  border-color: #c92a2a;
+  box-shadow: 0 0 18px 0 #c92a2a33, 0 0 0 2px #c92a2a44;
+}
+.faction-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 32px 4px #fff2, 0 0 0 2.5px #fff4;
+  background: linear-gradient(120deg, #232b3a 40%, #222b44 100%);
+  border-width: 3.5px;
+}
+.icon {
+  font-size: 2.1rem;
+  filter: drop-shadow(0 0 4px #222b44cc);
+}
+@media (max-width: 600px) {
+  .faction-select-dialog {
+    min-width: 0;
+    width: 98vw;
+    padding: 1.2rem 0.2rem 1.2rem 0.2rem;
+  }
+  .faction-btns {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .faction-btn {
+    width: 90vw;
+    font-size: 1.05rem;
+    padding: 1.1rem 0.5rem;
+  }
+} 

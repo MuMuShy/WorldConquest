@@ -12,10 +12,12 @@
       *ngIf="selectedCountry"
       class="country-panel-container"
       [country]="selectedCountry"
+      [isAttacking]="isAttacking"
       (close)="closeCountryPanel()"
       (occupy)="onOccupyCountry()"
       (tax)="onTaxCountry()"
-      (propaganda)="onPropaganda()">
+      (propaganda)="onPropaganda()"
+      (attack)="onAttackCountry()">
     </app-country-panel>
   </div>
 </div>

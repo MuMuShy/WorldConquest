@@ -1,0 +1,115 @@
+.player-avatar {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3);
+    gap: var(--space-4);
+    width: 100%;
+  }
+  
+  .avatar-container {
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .avatar-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  }
+  
+  .level-badge {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    border: 2px solid var(--bg-dark);
+  }
+  
+  .player-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .player-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: var(--space-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .progress-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .progress-container {
+    width: 100%;
+  }
+  
+  .label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  
+  .progress-bar-bg {
+    height: 8px;
+    background-color: rgba(100, 116, 139, 0.3);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .health-bar {
+    background-color: var(--error);
+  }
+  
+  .energy-bar {
+    background-color: var(--secondary);
+  }
+  
+  .xp-bar {
+    background-color: var(--accent);
+  }
+  
+  @media (max-width: 768px) {
+    .player-avatar {
+      padding: var(--space-2);
+    }
+    
+    .avatar-image {
+      width: 50px;
+      height: 50px;
+    }
+    
+    .level-badge {
+      width: 20px;
+      height: 20px;
+      font-size: 0.7rem;
+    }
+    
+    .player-name {
+      font-size: 1rem;
+    }
+  }

@@ -1,0 +1,55 @@
+<div class="hud-container">
+    <!-- Top row -->
+    <div class="top-row">
+      <div class="player-section">
+        <app-player-avatar *ngIf="player" [player]="player"></app-player-avatar>
+      </div>
+      
+      <div class="resources-section">
+        <div class="resource-bar">
+          <app-resource-display 
+            *ngIf="player" 
+            type="money" 
+            [value]="player.resources.money">
+          </app-resource-display>
+          <app-resource-display 
+            *ngIf="player" 
+            type="crystals" 
+            [value]="player.resources.crystals">
+          </app-resource-display>
+          <app-resource-display 
+            *ngIf="player" 
+            type="infantry" 
+            [value]="player.army.infantry">
+          </app-resource-display>
+          <app-resource-display 
+            *ngIf="player" 
+            type="tank" 
+            [value]="player.army.tank">
+          </app-resource-display>
+          <app-resource-display 
+            *ngIf="player" 
+            type="warship" 
+            [value]="player.army.warship">
+          </app-resource-display>
+          <app-resource-display 
+            *ngIf="player" 
+            type="fighter" 
+            [value]="player.army.fighter">
+          </app-resource-display>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bottom row -->
+    <!-- <div class="bottom-row">
+      <div class="left-panel">
+        <app-stats-display *ngIf="player" [player]="player"></app-stats-display>
+      </div>
+      
+      <div class="right-panel">
+        <app-mini-map *ngIf="player" [player]="player"></app-mini-map>
+        <app-notification-feed [notifications]="notifications"></app-notification-feed>
+      </div>
+    </div> -->
+  </div>

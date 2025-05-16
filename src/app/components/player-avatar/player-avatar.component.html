@@ -1,0 +1,38 @@
+<div class="player-avatar glass-panel animate-fade-in">
+    <div class="avatar-container">
+      <img [src]="player.avatar" alt="Player Avatar" class="avatar-image" />
+      <div class="level-badge">{{ player.level }}</div>
+    </div>
+    <div class="player-info">
+      <h2 class="player-name">{{ player.name }}</h2>
+      <div class="progress-bars">
+        <div class="progress-container">
+          <div class="label">
+            <span>HP</span>
+            <span>{{ player.health.current }}/{{ player.health.max }}</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar health-bar" [style.width.%]="getPercentage(player.health.current, player.health.max)"></div>
+          </div>
+        </div>
+        <div class="progress-container">
+          <div class="label">
+            <span>ENERGY</span>
+            <span>{{ player.energy.current }}/{{ player.energy.max }}</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar energy-bar" [style.width.%]="getPercentage(player.energy.current, player.energy.max)"></div>
+          </div>
+        </div>
+        <div class="progress-container">
+          <div class="label">
+            <span>XP</span>
+            <span>{{ player.experience.current }}/{{ player.experience.required }}</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar xp-bar" [style.width.%]="getPercentage(player.experience.current, player.experience.required)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

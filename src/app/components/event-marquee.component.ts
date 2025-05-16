@@ -30,7 +30,7 @@ interface EventToast {
   styles: [
     `.event-marquee.chat-style {
       position: fixed;
-      right: 24px;
+      left: 24px;
       bottom: 32px;
       z-index: 9999;
       display: flex;
